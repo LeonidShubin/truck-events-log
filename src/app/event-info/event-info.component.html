@@ -1,0 +1,7 @@
+<ul>
+  <li>Selected event: {{details.type}}</li>
+  <li>Started at: {{details.start.time | date:'h:mm a'}}</li>
+  <li>Finished at: {{details.end.time | date:'h:mm a'}}</li>
+</ul>
+
+<div class="btn btn-light" (click)="saveChanges($event)">Save changes</div>

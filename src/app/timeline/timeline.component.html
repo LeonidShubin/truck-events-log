@@ -1,0 +1,60 @@
+<div class="display-1">{{test}}</div>
+
+<div id="timeline" class="tl">
+  <div class="container">
+    <div class="row">
+      <div class="col-1">
+        <ul>
+          <li class="text-danger">OFF</li>
+          <li class="text-warning">SB</li>
+          <li class="text-success">D</li>
+          <li class="text-info">ON</li>
+        </ul>
+      </div>
+      <div class="col-10 tl_events-field_wrapper">
+        <ul class="tl_events-field" [style]="{width: params.initWidth + 'px'}">
+          <li class="tl_event-bar tl_event-bar--off">
+            <div
+              class="tl_event-bar_item"
+              *ngFor="let item of events.offEvents"
+              [style]="{left: item.left + 'px', right: item.right + 'px'}"
+              (click)="itemSelectHandler($event, item)"
+            ></div>
+          </li>
+          <li class="tl_event-bar tl_event-bar--sb">
+            <div
+              class="tl_event-bar_item"
+              *ngFor="let item of events.sbEvents"
+              [style]="{left: item.left + 'px', right: item.right + 'px'}"
+              (click)="itemSelectHandler($event, item)"
+            ></div>
+          </li>
+          <li class="tl_event-bar tl_event-bar--d">
+            <div
+              class="tl_event-bar_item"
+              *ngFor="let item of events.dEvents"
+              [style]="{left: item.left + 'px', right: item.right + 'px'}"
+              (click)="itemSelectHandler($event, item)"
+            ></div>
+          </li>
+          <li class="tl_event-bar tl_event-bar--on">
+            <div
+              class="tl_event-bar_item"
+              *ngFor="let item of events.onEvents"
+              [style]="{left: item.left + 'px', right: item.right + 'px'}"
+              (click)="itemSelectHandler($event, item)"
+            ></div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-1">
+        <ul class="tl_right-bar">
+          <li class="text-danger">{{ events.durations.offd | date: 'hh:mm'}}</li>
+          <li class="text-warning">{{ events.durations.sb | date: 'hh:mm'}}</li>
+          <li class="text-success">{{ events.durations.d | date: 'hh:mm'}}</li>
+          <li class="text-info">{{ events.durations.ond | date: 'hh:mm'}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

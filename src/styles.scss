@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/scss/bootstrap";
+
+.item_left-drag,
+.item_right-drag {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 30px;
+  background: #000;
+  cursor: e-resize;
+}
+
+.item_left-drag {
+  left: 0;
+}
+
+.item_right-drag {
+  right: 0;
+}

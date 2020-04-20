@@ -1,0 +1,52 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+.tl {
+  overflow: hidden;
+  background: whitesmoke;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  li {
+    height: 40px;
+    width: 100%;
+  }
+
+  .tl_events-field {
+    &_wrapper {
+      margin-bottom: -17px;
+      overflow-x: scroll;
+    }
+    .tl_event-bar {
+      position: relative;
+
+      &_item {
+        position: absolute;
+        height: 100%;
+        cursor: pointer;
+
+        &--selected {
+          outline: 1px solid;
+        }
+      }
+
+      &--off .tl_event-bar_item {
+        background: $danger;
+      }
+      &--sb .tl_event-bar_item {
+        background: $warning;
+      }
+      &--d .tl_event-bar_item {
+        background: $success;
+      }
+      &--on .tl_event-bar_item {
+        background: $info;
+      }
+    }
+  }
+}
+
