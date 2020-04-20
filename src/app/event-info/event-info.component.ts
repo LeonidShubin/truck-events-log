@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {IEventDetails} from '../shared/interfaces/event-details.interface';
 import {DataService} from '../shared/services/data.service';
 
 @Component({
@@ -8,18 +7,10 @@ import {DataService} from '../shared/services/data.service';
   styleUrls: ['./event-info.component.scss']
 })
 export class EventInfoComponent implements OnInit {
-  details: IEventDetails = {
+  details = {
     type: null,
-    start: {
-      time: new Date(),
-      latitude: 0,
-      longitude: 0,
-    },
-    end: {
-      time: new Date(),
-      latitude: 0,
-      longitude: 0,
-    }
+    start: new Date(),
+    end: new Date(),
   };
 
   constructor(
@@ -27,14 +18,17 @@ export class EventInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.details.subscribe(value => {
-      this.details = value;
-    });
+    this.dataService.details.type.subscribe(val => this.details.type = val);
+    this.dataService.details.start.time.subscribe(val => this.details.start = val);
+    this.dataService.details.end.time.subscribe(val => this.details.end = val);
 
   }
 
   saveChanges(e) {
-    this.dataService.details.next(null);
+    const index = this.dataService.details.index.getValue();
+    this.dataService.eventsLog[index].time = this.dataService.details.start.time.getValue();
+    this.dataService.eventsLog[index + 1].time = this.dataService.details.end.time.getValue();
+    this.dataService.details.showDetails.next(false);
   }
 
 }

@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {MapService} from '../shared/services/map.service';
+import {Component, OnInit} from '@angular/core';
 import {DataService} from '../shared/services/data.service';
 
 @Component({
@@ -8,7 +7,6 @@ import {DataService} from '../shared/services/data.service';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  showDirection: boolean;
   origin = {
     latitude: 0,
     longitude: 0
@@ -20,23 +18,16 @@ export class MapComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private  mapService: MapService
   ) {
+    this.dataService.details.start.latitude.subscribe(val => this.origin.latitude = val);
+    this.dataService.details.start.longitude.subscribe(val => this.origin.longitude = val);
 
-    this.dataService.details.subscribe(value => {
-      if (!value) { return; }
-      this.showDirection = false;
-      this.origin.latitude = value.start.latitude;
-      this.origin.longitude = value.start.longitude;
-      if (value.start.latitude !== value.end.latitude && value.start.longitude !== value.end.longitude) {
-        this.showDirection = true;
-        this.destination.latitude = value.end.latitude;
-        this.destination.longitude = value.end.longitude;
-      }
-    });
+    this.dataService.details.end.latitude.subscribe(val => this.destination.latitude = val);
+    this.dataService.details.end.longitude.subscribe(val => this.destination.longitude = val);
+
+
   }
 
   ngOnInit(): void {
   }
-
 }

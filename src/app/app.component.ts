@@ -16,8 +16,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService.details.subscribe(value => {
-      this.showDetails = Boolean(value);
+    this.dataService.details.showDetails.subscribe(value => {
+      this.showDetails = value;
     });
   }
 

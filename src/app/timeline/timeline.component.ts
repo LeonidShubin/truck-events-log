@@ -1,7 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit } from '@angular/core';
 import {DataService} from '../shared/services/data.service';
-
-declare const google: any;
 
 @Component({
   selector: 'app-timeline',
@@ -26,7 +24,10 @@ export class TimelineComponent implements OnInit {
       ond: 0,
     }
   };
-  test = 0;
+  selectedItem = {
+    original: null,
+    clone: null,
+  };
 
   constructor(
     private dataService: DataService
@@ -36,6 +37,12 @@ export class TimelineComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.setDemoLog();
     this.initTimeLine();
+    this.dataService.details.showDetails.subscribe(val =>  {
+      if (!val) {
+        this.removeSelection();
+        this.reInitTimeLine();
+      }
+    } );
   }
 
   initTimeLine() {
@@ -44,13 +51,12 @@ export class TimelineComponent implements OnInit {
     this.params.fullDuration = this.dataService.eventsLog[this.dataService.eventsLog.length - 1].time - this.dataService.eventsLog[0].time;
 
     this.dataService.eventsLog.forEach((item, i, arr) => {
-      if (!arr[i + 1]) {
-        return;
-      }
+      if (!arr[i + 1]) { return; }
+
       const element = {
-        left:  this.msToPx(item.time - arr[0].time),
+        left:  this.msToPx( item.time - arr[0].time),
         right: this.msToPx(arr[arr.length - 1].time - arr[i + 1].time),
-        duration: arr[i + 1].time - item.time,
+        duration: +arr[i + 1].time - +item.time,
         index: i
       };
       switch (item.type) {
@@ -79,20 +85,22 @@ export class TimelineComponent implements OnInit {
   }
 
   itemSelectHandler(event, evItem) {
-    this.dataService.gatherDetails(evItem.index);
+    if (!event.target.classList.contains('tl_event-bar_item')) { return; }
 
-    if (document.querySelector('.tl_event-bar_item--selected')) {
-      document.querySelector('.tl_event-bar_item--selected').classList.remove('tl_event-bar_item--selected');
-    }
+    this.removeSelection();
+    this.selectedItem.clone = {...evItem};
+    this.selectedItem.original = evItem;
+
+    this.dataService.gatherDetails(evItem.index);
+    this.dataService.details.showDetails.next(true);
+
     event.target.classList.add('tl_event-bar_item--selected');
-    this.createDragItems(event.target, evItem);
+
+    this.createDragItems(event.target, evItem, this);
   }
 
-  createDragItems(container: HTMLElement, evItem) {
-    if (document.querySelector('.item_left-drag')) {
-      document.querySelector('.item_left-drag').remove();
-      document.querySelector('.item_right-drag').remove();
-    }
+  createDragItems(container: HTMLElement, evItem, context) {
+    const arr = context.dataService.eventsLog;
     const leftDrag = document.createElement('div');
     const rightDrag = document.createElement('div');
     leftDrag.classList.add('item_left-drag');
@@ -102,22 +110,64 @@ export class TimelineComponent implements OnInit {
 
     leftDrag.addEventListener('mousedown', lev => {
       const initLeft = evItem.left;
-      leftDrag.addEventListener('mousemove', le => {
-        evItem.left = (initLeft + le.clientX - lev.clientX);
+
+      leftDrag.addEventListener('mousemove', handler);
+
+      leftDrag.addEventListener('mouseup', () => {
+        leftDrag.removeEventListener('mousemove', handler);
       });
+
+      function handler(event) {
+        const expression = initLeft + event.clientX - lev.clientX;
+        const conditionMin = () => {
+          if (arr[evItem.index - 1]) {
+            return expression <= context.msToPx( arr[evItem.index - 1].time - arr[0].time);
+          } else {
+            return !expression;
+          }
+        };
+
+        if (conditionMin()) { return; }
+
+
+        evItem.left = expression;
+
+        context.dataService.details.start.time.next(new Date (+arr[0].time + context.pxToMs(evItem.left)));
+      }
     });
 
     rightDrag.addEventListener('mousedown', rev => {
       const initRight = evItem.right;
-      rightDrag.addEventListener('mousemove', re => {
-        evItem.right = (initRight + rev.clientX - re.clientX);
+
+      rightDrag.addEventListener('mousemove', handler);
+
+      rightDrag.addEventListener('mouseup', () => {
+        rightDrag.removeEventListener('mousemove', handler);
       });
+
+      function handler(event) {
+        const expression = initRight + rev.clientX - event.clientX;
+        const conditionMax = () => {
+          if (arr[evItem.index + 1]) {
+            return expression <= initRight;
+          } else {
+            return !expression;
+          }
+        };
+
+        if (conditionMax()) { return; }
+
+        evItem.right = expression;
+
+        context.dataService.details.end.time
+          .next(new Date (context.dataService.eventsLog[context.dataService.eventsLog.length - 1].time - context.pxToMs(evItem.right)));
+      }
     });
 
   }
 
   msToPx(duration: Date): number {
-    return (this.params.initWidth * duration) / this.params.fullDuration;
+    return (this.params.initWidth * +duration) / this.params.fullDuration;
   }
 
   pxToMs(px): number {
@@ -127,8 +177,28 @@ export class TimelineComponent implements OnInit {
   sumDurations(eventArr): number {
     return eventArr.reduce((acc, item) => acc + item.duration, 0);
   }
-}
 
-//
-// console.log( new Date (+this.dataService.eventsLog[0].time + this.pxToMs(evItem.left)));
-// console.log( new Date (this.dataService.eventsLog[this.dataService.eventsLog.length - 1].time - this.pxToMs(evItem.right)));
+  removeSelection(initItemVal?) {
+    if (document.querySelector('.tl_event-bar_item--selected')) {
+      document.querySelector('.tl_event-bar_item--selected').classList.remove('tl_event-bar_item--selected');
+    }
+
+    if (document.querySelector('.item_left-drag')) {
+      document.querySelector('.item_left-drag').remove();
+      document.querySelector('.item_right-drag').remove();
+    }
+
+    if (this.selectedItem.original) {
+      this.selectedItem.original.right = this.selectedItem.clone.right;
+      this.selectedItem.original.left = this.selectedItem.clone.left;
+    }
+  }
+
+  reInitTimeLine() {
+    this.events.onEvents = [];
+    this.events.sbEvents = [];
+    this.events.dEvents = [];
+    this.events.offEvents = [];
+    this.initTimeLine();
+  }
+}

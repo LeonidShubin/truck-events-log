@@ -7,12 +7,12 @@
   style="height: 400px"
 >
   <agm-direction
-    *ngIf="showDirection"
+    *ngIf="origin.longitude !== destination.longitude && origin.latitude !== destination.latitude"
   [origin]="{lng: origin.longitude, lat: origin.latitude}"
   [destination]="{lng: destination.longitude, lat: destination.latitude}"
   ></agm-direction>
   <agm-marker
-    *ngIf="!showDirection"
+    *ngIf="!(origin.longitude !== destination.longitude && origin.latitude !== destination.latitude)"
     [latitude]="origin.latitude"
     [longitude]="origin.longitude"
   >

@@ -7,27 +7,34 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class DataService {
   eventsLog: ITruckEvent[];
-  details: BehaviorSubject<any> = new BehaviorSubject(null);
+  details = {
+    type: new BehaviorSubject(null),
+    index: new BehaviorSubject(null),
+    start: {
+      time: new BehaviorSubject(null),
+      latitude: new BehaviorSubject(null),
+      longitude: new BehaviorSubject(null),
+    },
+    end: {
+      time: new BehaviorSubject(null),
+      latitude: new BehaviorSubject(null),
+      longitude: new BehaviorSubject(null),
+    },
+    showDetails: new BehaviorSubject(false)
+  };
 
   constructor() {
   }
 
   gatherDetails(itemIndex) {
-    const details = {
-      type: this.eventsLog[itemIndex].type,
-      start: {
-        time: this.eventsLog[itemIndex].time,
-        latitude: this.eventsLog[itemIndex].latitude,
-        longitude: this.eventsLog[itemIndex].longitude,
-      },
-      end: {
-        time: this.eventsLog[itemIndex + 1].time,
-        latitude: this.eventsLog[itemIndex + 1].latitude,
-        longitude: this.eventsLog[itemIndex + 1].longitude,
-      },
-    };
-
-    this.details.next(details);
+    this.details.index.next(itemIndex);
+    this.details.type.next(this.eventsLog[itemIndex].type);
+    this.details.start.time.next(this.eventsLog[itemIndex].time);
+    this.details.start.latitude.next(this.eventsLog[itemIndex].latitude);
+    this.details.start.longitude.next(this.eventsLog[itemIndex].longitude);
+    this.details.end.time.next(this.eventsLog[itemIndex + 1].time);
+    this.details.end.latitude.next(this.eventsLog[itemIndex + 1].latitude);
+    this.details.end.longitude.next(this.eventsLog[itemIndex + 1].longitude);
   }
 
   setDemoLog() {
