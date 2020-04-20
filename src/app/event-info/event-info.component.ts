@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DataService} from '../shared/services/data.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class EventInfoComponent implements OnInit {
 
   constructor(
     private dataService: DataService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.dataService.details.type.subscribe(val => this.details.type = val);

@@ -1,7 +1,20 @@
 <ul>
-  <li>Selected event: {{details.type}}</li>
-  <li>Started at: {{details.start | date:'h:mm a'}}</li>
-  <li>Finished at: {{details.end | date:'h:mm a'}}</li>
+  <li class="h4">Selected event:
+    <span
+      [ngClass]="{
+        'text-danger': details.type === 'off duty',
+        'text-warning': details.type === 'sleeper berth',
+        'text-success': details.type === 'driving',
+        'text-info': details.type === 'on duty'
+      }"
+    >{{details.type | titlecase}}</span>
+  </li>
+  <li class="h4">Started at:
+    <span class="font-weight-normal">{{details.start | date:'h:mm a'}}</span>
+  </li>
+  <li class="h4">Finished at:
+    <span class="font-weight-normal">{{details.end | date:'h:mm a'}}</span>
+  </li>
 </ul>
 
-<div class="btn btn-light" (click)="saveChanges($event)">Save changes</div>
+<div (click)="saveChanges($event)" class="btn btn-light">Save changes</div>

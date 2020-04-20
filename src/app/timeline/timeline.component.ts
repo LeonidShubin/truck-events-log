@@ -1,4 +1,4 @@
-import {Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DataService} from '../shared/services/data.service';
 
 @Component({
@@ -37,25 +37,28 @@ export class TimelineComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.setDemoLog();
     this.initTimeLine();
-    this.dataService.details.showDetails.subscribe(val =>  {
+    this.dataService.details.showDetails.subscribe(val => {
       if (!val) {
         this.removeSelection();
         this.reInitTimeLine();
       }
-    } );
+    });
   }
 
   initTimeLine() {
     const field = document.querySelector('.tl_events-field');
+    const dataArr = this.dataService.eventsLog;
     this.params.initWidth = field.clientWidth;
-    this.params.fullDuration = this.dataService.eventsLog[this.dataService.eventsLog.length - 1].time - this.dataService.eventsLog[0].time;
+    this.params.fullDuration = +dataArr[dataArr.length - 1].time - +dataArr[0].time;
 
-    this.dataService.eventsLog.forEach((item, i, arr) => {
-      if (!arr[i + 1]) { return; }
+    dataArr.forEach((item, i, arr) => {
+      if (!arr[i + 1]) {
+        return;
+      }
 
       const element = {
-        left:  this.msToPx( item.time - arr[0].time),
-        right: this.msToPx(arr[arr.length - 1].time - arr[i + 1].time),
+        left: this.msToPx(+item.time - +arr[0].time),
+        right: this.msToPx(+arr[arr.length - 1].time - +arr[i + 1].time),
         duration: +arr[i + 1].time - +item.time,
         index: i
       };
@@ -85,7 +88,9 @@ export class TimelineComponent implements OnInit {
   }
 
   itemSelectHandler(event, evItem) {
-    if (!event.target.classList.contains('tl_event-bar_item')) { return; }
+    if (!event.target.classList.contains('tl_event-bar_item')) {
+      return;
+    }
 
     this.removeSelection();
     this.selectedItem.clone = {...evItem};
@@ -101,6 +106,7 @@ export class TimelineComponent implements OnInit {
 
   createDragItems(container: HTMLElement, evItem, context) {
     const arr = context.dataService.eventsLog;
+
     const leftDrag = document.createElement('div');
     const rightDrag = document.createElement('div');
     leftDrag.classList.add('item_left-drag');
@@ -121,18 +127,19 @@ export class TimelineComponent implements OnInit {
         const expression = initLeft + event.clientX - lev.clientX;
         const conditionMin = () => {
           if (arr[evItem.index - 1]) {
-            return expression <= context.msToPx( arr[evItem.index - 1].time - arr[0].time);
+            return expression <= context.msToPx(arr[evItem.index - 1].time - arr[0].time);
           } else {
             return !expression;
           }
         };
 
-        if (conditionMin()) { return; }
-
+        if (conditionMin()) {
+          return;
+        }
 
         evItem.left = expression;
 
-        context.dataService.details.start.time.next(new Date (+arr[0].time + context.pxToMs(evItem.left)));
+        context.dataService.details.start.time.next(new Date(+arr[0].time + context.pxToMs(evItem.left)));
       }
     });
 
@@ -155,18 +162,20 @@ export class TimelineComponent implements OnInit {
           }
         };
 
-        if (conditionMax()) { return; }
+        if (conditionMax()) {
+          return;
+        }
 
         evItem.right = expression;
 
         context.dataService.details.end.time
-          .next(new Date (context.dataService.eventsLog[context.dataService.eventsLog.length - 1].time - context.pxToMs(evItem.right)));
+          .next(new Date(context.dataService.eventsLog[context.dataService.eventsLog.length - 1].time - context.pxToMs(evItem.right)));
       }
     });
 
   }
 
-  msToPx(duration: Date): number {
+  msToPx(duration): number {
     return (this.params.initWidth * +duration) / this.params.fullDuration;
   }
 
@@ -178,7 +187,7 @@ export class TimelineComponent implements OnInit {
     return eventArr.reduce((acc, item) => acc + item.duration, 0);
   }
 
-  removeSelection(initItemVal?) {
+  removeSelection() {
     if (document.querySelector('.tl_event-bar_item--selected')) {
       document.querySelector('.tl_event-bar_item--selected').classList.remove('tl_event-bar_item--selected');
     }

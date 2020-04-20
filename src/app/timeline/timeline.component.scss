@@ -2,9 +2,6 @@
 @import "node_modules/bootstrap/scss/variables";
 
 .tl {
-  overflow: hidden;
-  background: whitesmoke;
-
   ul {
     padding: 0;
     margin: 0;
@@ -18,9 +15,9 @@
 
   .tl_events-field {
     &_wrapper {
-      margin-bottom: -17px;
-      overflow-x: scroll;
+      overflow-x: auto;
     }
+
     .tl_event-bar {
       position: relative;
 
@@ -30,19 +27,22 @@
         cursor: pointer;
 
         &--selected {
-          outline: 1px solid;
+          box-shadow: $gray-800 2px 2px 2px 1px;
         }
       }
 
       &--off .tl_event-bar_item {
         background: $danger;
       }
+
       &--sb .tl_event-bar_item {
         background: $warning;
       }
+
       &--d .tl_event-bar_item {
         background: $success;
       }
+
       &--on .tl_event-bar_item {
         background: $info;
       }

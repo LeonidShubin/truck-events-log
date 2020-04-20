@@ -1,15 +1,15 @@
 <agm-map
   [latitude]="origin.latitude"
   [longitude]="origin.longitude"
-  [zoom]="14"
   [streetViewControl]="false"
   [zoomControl]="false"
-  style="height: 400px"
+  [zoom]="14"
+  style="height: 400px;"
 >
   <agm-direction
     *ngIf="origin.longitude !== destination.longitude && origin.latitude !== destination.latitude"
-  [origin]="{lng: origin.longitude, lat: origin.latitude}"
-  [destination]="{lng: destination.longitude, lat: destination.latitude}"
+    [destination]="{lng: destination.longitude, lat: destination.latitude}"
+    [origin]="{lng: origin.longitude, lat: origin.latitude}"
   ></agm-direction>
   <agm-marker
     *ngIf="!(origin.longitude !== destination.longitude && origin.latitude !== destination.latitude)"

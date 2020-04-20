@@ -5,8 +5,8 @@ import {AppComponent} from './app.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MapComponent} from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
-import { TimelineComponent } from './timeline/timeline.component';
-import { EventInfoComponent } from './event-info/event-info.component';
+import {TimelineComponent} from './timeline/timeline.component';
+import {EventInfoComponent} from './event-info/event-info.component';
 import {AgmDirectionModule} from 'agm-direction';
 
 @NgModule({

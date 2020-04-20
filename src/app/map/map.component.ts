@@ -3,8 +3,7 @@ import {DataService} from '../shared/services/data.service';
 
 @Component({
   selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  templateUrl: './map.component.html'
 })
 export class MapComponent implements OnInit {
   origin = {
